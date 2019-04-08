@@ -10,10 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_08_083638) do
+ActiveRecord::Schema.define(version: 2019_04_08_092047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "dishes", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "doses", force: :cascade do |t|
+    t.bigint "dish_id"
+    t.bigint "nutrition_id"
+    t.integer "amount"
+    t.string "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dish_id"], name: "index_doses_on_dish_id"
+    t.index ["nutrition_id"], name: "index_doses_on_nutrition_id"
+  end
 
   create_table "goals", force: :cascade do |t|
     t.bigint "user_id"
@@ -26,8 +43,34 @@ ActiveRecord::Schema.define(version: 2019_04_08_083638) do
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
+  create_table "meals", force: :cascade do |t|
+    t.datetime "date"
+    t.bigint "user_id"
+    t.bigint "order_item_id"
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_item_id"], name: "index_meals_on_order_item_id"
+    t.index ["user_id"], name: "index_meals_on_user_id"
+  end
+
   create_table "nutritions", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "order_items", force: :cascade do |t|
+    t.bigint "order_id"
+    t.bigint "dish_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dish_id"], name: "index_order_items_on_dish_id"
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.datetime "order_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -42,6 +85,12 @@ ActiveRecord::Schema.define(version: 2019_04_08_083638) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "doses", "dishes"
+  add_foreign_key "doses", "nutritions"
   add_foreign_key "goals", "nutritions"
   add_foreign_key "goals", "users"
+  add_foreign_key "meals", "order_items"
+  add_foreign_key "meals", "users"
+  add_foreign_key "order_items", "dishes"
+  add_foreign_key "order_items", "orders"
 end
