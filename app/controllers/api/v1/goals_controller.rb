@@ -3,7 +3,8 @@ class Api::V1::GoalsController < Api::V1::BaseController
 
   def index
     @user = current_user
-    @goals = current_user.goals
+    # @user = User.find(1)
+    @goals = @user.goals
   end
 
   def show
