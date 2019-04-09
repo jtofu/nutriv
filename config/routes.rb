@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       end
 
       resources :users, only: [:show, :create, :update]
+      resources :goals, only: [:index, :show, :create, :update, :destroy]
+
 
       post '/login', to: 'login#login'
     end
