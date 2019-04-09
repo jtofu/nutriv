@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_08_135806) do
+ActiveRecord::Schema.define(version: 2019_04_09_025425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,23 +23,23 @@ ActiveRecord::Schema.define(version: 2019_04_08_135806) do
 
   create_table "doses", force: :cascade do |t|
     t.bigint "dish_id"
-    t.bigint "nutrition_id"
     t.integer "amount"
     t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "nutrient_id"
     t.index ["dish_id"], name: "index_doses_on_dish_id"
-    t.index ["nutrition_id"], name: "index_doses_on_nutrition_id"
+    t.index ["nutrient_id"], name: "index_doses_on_nutrient_id"
   end
 
   create_table "goals", force: :cascade do |t|
     t.bigint "user_id"
-    t.bigint "nutrition_id"
     t.integer "amount"
     t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["nutrition_id"], name: "index_goals_on_nutrition_id"
+    t.bigint "nutrient_id"
+    t.index ["nutrient_id"], name: "index_goals_on_nutrient_id"
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 2019_04_08_135806) do
     t.index ["user_id"], name: "index_meals_on_user_id"
   end
 
-  create_table "nutritions", force: :cascade do |t|
+  create_table "nutrients", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -85,8 +85,8 @@ ActiveRecord::Schema.define(version: 2019_04_08_135806) do
   end
 
   add_foreign_key "doses", "dishes"
-  add_foreign_key "doses", "nutritions"
-  add_foreign_key "goals", "nutritions"
+  add_foreign_key "doses", "nutrients"
+  add_foreign_key "goals", "nutrients"
   add_foreign_key "goals", "users"
   add_foreign_key "meals", "dishes"
   add_foreign_key "meals", "users"
