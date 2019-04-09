@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_09_025425) do
+ActiveRecord::Schema.define(version: 2019_04_09_075611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,6 @@ ActiveRecord::Schema.define(version: 2019_04_09_025425) do
   create_table "doses", force: :cascade do |t|
     t.bigint "dish_id"
     t.integer "amount"
-    t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "nutrient_id"
@@ -35,7 +34,6 @@ ActiveRecord::Schema.define(version: 2019_04_09_025425) do
   create_table "goals", force: :cascade do |t|
     t.bigint "user_id"
     t.integer "amount"
-    t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "nutrient_id"
@@ -57,6 +55,8 @@ ActiveRecord::Schema.define(version: 2019_04_09_025425) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "unit"
+    t.string "api_code"
   end
 
   create_table "order_items", force: :cascade do |t|
