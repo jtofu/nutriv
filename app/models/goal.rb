@@ -1,4 +1,4 @@
 class Goal < ApplicationRecord
   belongs_to :user
-  belongs_to :nutrition
+  belongs_to :nutrient
 end
