@@ -1,4 +1,4 @@
-json.extract! @goal, :id, :user_id, :nutrient_id, :amount, :unit
+json.extract! @goal, :id
 json.nutrient @goal.nutrient.name
 
 
