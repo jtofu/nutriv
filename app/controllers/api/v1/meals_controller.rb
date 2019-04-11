@@ -11,18 +11,18 @@ class Api::V1::MealsController < Api::V1::BaseController
   end
 
   def create
-    @dish = Dish.find(params[:dish_id])
-    # @dish = Dish.find(571)
-    @user = current_user
     @meal = Meal.new(meal_params)
+    @dish = Dish.find(params[:dish_id])
+    @user = current_user
     @meal.user = @user
     @meal.dish = @dish
-    @meal.save
 
-    if @meal.save
-      render :index, status: :created
-    else
-      render_error
+    unless params[:quantity] <= 0
+      if @meal.save
+        render :index, status: :created
+      else
+        render_error
+      end
     end
   end
 
