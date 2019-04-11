@@ -12,6 +12,7 @@ class Api::V1::GoalsController < Api::V1::BaseController
 
   def create
     @goal = Goal.new(goal_params)
+    @goal.user = @user
     if @goal.save
       render :show, status: :created
     else
@@ -31,13 +32,13 @@ class Api::V1::GoalsController < Api::V1::BaseController
   def destroy
     @goal.destroy
   end
-  
+
   private
-  
+
   def set_user
     @user = current_user
   end
-  
+
   def set_goal
     @goal = Goal.find(params[:id])
   end
