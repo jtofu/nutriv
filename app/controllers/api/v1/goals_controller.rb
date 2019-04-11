@@ -11,7 +11,7 @@ class Api::V1::GoalsController < Api::V1::BaseController
   end
 
   def create
-    @nutrient = Nutrient.find(params[:nutrient_id])
+    @nutrient = Nutrient.find_by(name: params[:nutrient])
     @goal = Goal.new(goal_params)
     @goal.user = @user
     @goal.nutrient = @nutrient
@@ -46,7 +46,7 @@ class Api::V1::GoalsController < Api::V1::BaseController
   end
 
   def goal_params
-    params.require(:goal).permit(:amount, :user_id, :nutrient_id)
+    params.require(:goal).permit(:amount, :user_id, :nutrient)
   end
 
   def render_error
