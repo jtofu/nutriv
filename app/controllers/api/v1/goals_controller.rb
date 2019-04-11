@@ -11,8 +11,10 @@ class Api::V1::GoalsController < Api::V1::BaseController
   end
 
   def create
+    @nutrient = Nutrient.find(params[:nutrient_id])
     @goal = Goal.new(goal_params)
     @goal.user = @user
+    @goal.nutrient = @nutrient
     if @goal.save
       render :show, status: :created
     else
@@ -44,11 +46,11 @@ class Api::V1::GoalsController < Api::V1::BaseController
   end
 
   def goal_params
-    params.require(:user).permit(:amount, :unit, :user_id, :nutrient_id)
+    params.require(:goal).permit(:amount, :user_id, :nutrient_id)
   end
 
   def render_error
-    render json: { errors: @user.errors.full_messages },
+    render json: { errors: @goal.errors.full_messages },
     status: :unprocessable_entity
   end
 end

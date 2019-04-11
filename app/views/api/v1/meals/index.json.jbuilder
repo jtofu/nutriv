@@ -3,6 +3,7 @@ json.meals @meals do |meal|
   json.date meal.created_at.strftime('%Y-%m-%e')
   json.time meal.created_at.strftime('%l:%M %p')
   json.dish meal.dish.name
+  json.dish_short meal.dish.name[0..20] + ".."
     json.nutrients meal.dish.doses do |dose|
       json.name dose.nutrient.name
       json.unit dose.nutrient.unit
