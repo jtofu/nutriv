@@ -1,4 +1,5 @@
 json.extract! @user, :id, :wechat_id, :username, :profile_image, :first_name, :last_name
 json.goals @user.goals do |goal|
-  json.extract! goal, :id, :amount
+  json.extract! goal, :id, :amount, :nutrient, :unit
+  json.extract! unit, goal.nutrient.unit
 end
