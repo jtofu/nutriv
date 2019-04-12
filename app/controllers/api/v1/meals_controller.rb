@@ -3,7 +3,7 @@ class Api::V1::MealsController < Api::V1::BaseController
 
   def index
     @user = current_user
-    @meals = current_user.meals
+    @meals = current_user.meals.order(created_at: :desc)
   end
 
   def show
