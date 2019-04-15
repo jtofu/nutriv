@@ -8,6 +8,8 @@ Bundler.require(*Rails.groups)
 
 module Nutriv
   class Application < Rails::Application
+    # config.time_zone = "Beijing"
+
     config.generators do |generate|
           generate.assets false
           generate.helper false
