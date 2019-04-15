@@ -1,7 +1,7 @@
 json.meals @meals do |meal|
-  json.extract! meal, :id
-  json.date meal.created_at.strftime('%Y-%m-%e')
-  json.time meal.created_at.strftime('%l:%M %p')
+  json.extract! meal, :id, :quantity
+  json.date meal.created_at.in_time_zone("Beijing").strftime('%Y-%m-%e')
+  json.time meal.created_at.in_time_zone("Beijing").strftime('%l:%M %p')
   json.dish meal.dish.name
   json.dish_short meal.dish.name[0..20] + ".."
     json.nutrients meal.dish.doses do |dose|
