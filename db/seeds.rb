@@ -1,110 +1,90 @@
+require 'open-uri'
 
-# puts "Destroying Doses..."
-# Dose.destroy_all if Rails.env.development?
-# puts "Destroyed Doses."
-
-
-# # SEEDING NUTRIENT
-# puts "Destroying Nutrients...."
-# Nutrient.destroy_all if Rails.env.development?
-# puts "Destroyed Nutrients."
-
-# nutrients = [{ name: 'Carbohydrate', unit: 'g', api_code: 'nf_total_carbohydrate' },
-# { name: 'Cholesterol', unit: 'mg', api_code: 'nf_cholesterol' },
-# { name: 'Calories', unit: 'kcal', api_code: 'nf_calories' },
-# { name: 'Saturated Fat', unit: 'g', api_code: 'nf_saturated_fat' },
-# { name: 'Total Fat', unit: 'g', api_code: 'nf_total_fat' },
-# { name: 'Trans Fatty Acid', unit: 'g', api_code: 'nf_trans_fatty_acid' },
-# { name: 'Dietary Fiber', unit: 'g', api_code: 'nf_dietary_fiber' },
-# { name: 'Sodium', unit: 'mg', api_code: 'nf_sodium' },
-# { name: 'Protein', unit: 'g', api_code: 'nf_protein' },
-# { name: 'Sugars', unit: 'g', api_code: 'nf_sugars' }]
-
-# puts "Seeding nutrients.."
-
-# nutrients.each do |n|
-#   Nutrient.create!(name: n[:name], unit: n[:unit], api_code: n[:api_code])
-#   # p n[:name]
-# end
-
-# puts "Created #{Nutrient.count} nutrients."
-
-
-app_id = ENV["X_APP_ID"]
-app_key = ENV["X_APP_KEY"]
-
-puts "Destroying meal, dish & dose"
-
-Meal.destroy_all if Rails.env.development?
+puts "Destroying children first... goals, order items, doses and meals..."
 Dose.destroy_all if Rails.env.development?
+Meal.destroy_all if Rails.env.development?
+Goal.destroy_all if Rails.env.development?
+OrderItem.destroy_all if Rails.env.development?
+
+puts "Children destroyed!"
+
+puts "Destroying orders, dishes & nutrients.."
+Order.destroy_all if Rails.env.development?
 Dish.destroy_all if Rails.env.development?
+Nutrient.destroy_all if Rails.env.development?
 
-puts "Seeding dish & dose.."
+puts "Orders, Dishes and Nutrients destroyed!"
 
+puts "Seeding nutrients.."
 
-queries = %w(pancake sandwich salad poke granola)
-# query = "salad"
-url = "https://trackapi.nutritionix.com/v2/search/"
+nutrients = [{ name: 'Carbohydrate', unit: 'g', api_code: 'nf_total_carbohydrate' },
+{ name: 'Cholesterol', unit: 'mg', api_code: 'nf_cholesterol' },
+{ name: 'Calories', unit: 'kcal', api_code: 'nf_calories' },
+{ name: 'Saturated Fat', unit: 'g', api_code: 'nf_saturated_fat' },
+{ name: 'Total Fat', unit: 'g', api_code: 'nf_total_fat' },
+{ name: 'Trans Fatty Acid', unit: 'g', api_code: 'nf_trans_fatty_acid' },
+{ name: 'Dietary Fiber', unit: 'g', api_code: 'nf_dietary_fiber' },
+{ name: 'Sodium', unit: 'mg', api_code: 'nf_sodium' },
+{ name: 'Protein', unit: 'g', api_code: 'nf_protein' },
+{ name: 'Sugars', unit: 'g', api_code: 'nf_sugars' }]
 
-queries.each do |query|
-
-  dish_data = RestClient.get("#{url}instant?query=#{query}", headers={"x-app-id": app_id, "x-app-key": app_key})
-  dish_parsed = JSON.parse(dish_data)
-
-  dish_parsed["branded"].each do |item|
-    unless item["nix_item_id"].nil?
-      nix_item_id = item["nix_item_id"]
-      dish = Dish.create!(name: "#{item["food_name"]} #{query}")
-
-      dose_data = RestClient.get("https://trackapi.nutritionix.com/v2/search/item?nix_item_id=#{nix_item_id}", headers={"x-app-id": app_id, "x-app-key": app_key})
-
-      dose_parsed = JSON.parse(dose_data)
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_total_carbohydrate"].to_i, nutrient: Nutrient.find_by(api_code: "nf_total_carbohydrate")) unless Nutrient.find_by(api_code: "nf_total_carbohydrate").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_calories"].to_i, nutrient: Nutrient.find_by(api_code: "nf_calories")) unless Nutrient.find_by(api_code: "nf_calories").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_total_fat"].to_i, nutrient: Nutrient.find_by(api_code: "nf_total_fat")) unless Nutrient.find_by(api_code: "nf_total_fat").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_saturated_fat"].to_i, nutrient: Nutrient.find_by(api_code: "nf_saturated_fat")) unless Nutrient.find_by(api_code: "nf_saturated_fat").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_cholesterol"].to_i, nutrient: Nutrient.find_by(api_code: "nf_cholesterol")) unless Nutrient.find_by(api_code: "nf_cholesterol").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_sodium"].to_i, nutrient: Nutrient.find_by(api_code: "nf_sodium")) unless Nutrient.find_by(api_code: "nf_sodium").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_dietary_fiber"].to_i, nutrient: Nutrient.find_by(api_code: "nf_dietary_fiber")) unless Nutrient.find_by(api_code: "nf_dietary_fiber").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_sugars"].to_i, nutrient: Nutrient.find_by(api_code: "nf_sugars")) unless Nutrient.find_by(api_code: "nf_sugars").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_protein"].to_i, nutrient: Nutrient.find_by(api_code: "nf_protein")) unless Nutrient.find_by(api_code: "nf_protein").nil?
-
-      Dose.create!(dish: dish, amount: dose_parsed["foods"].first[ "nf_potassium"].to_i, nutrient: Nutrient.find_by(api_code: "nf_potassium")) unless Nutrient.find_by(api_code: "nf_potassium").nil?
-
-      puts "Created #{dish}."
-    end
-  end
-
+nutrients.each do |n|
+  Nutrient.create!(name: n[:name], unit: n[:unit], api_code: n[:api_code])
 end
 
+puts "Created #{Nutrient.count} nutrients."
 
+puts "Seeding dishes & doses..."
+base_url = "https://www.foodnetwork.com/healthy/packages/healthy-every-week/healthy-mains/foodnetwork-most-saved-healthy-recipes#item-"
+
+file_one = Nokogiri::HTML(File.open("db/foodnetwork1.html"), nil, 'utf-8')
+
+dishes = []
+
+file_one.search('.o-PhotoGalleryPromo__a-Cta a').first(40).each do |res|
+  url = res["href"].gsub("//","https://")
+  item = Nokogiri::HTML(open(url).read)
+
+  image = item.at_css('img.m-MediaBlock__a-Image')["src"].gsub("//","https://")
+  name = res.text.strip.gsub("Get the Recipe:\n      \n        ","")
+
+  unless item.at_css('#nutrition-content').nil?
+    count_nutrient = item.at_css('#nutrition-content').css('dt').count
+
+    nutrients = []
+
+    item.search('.m-NutritionTable__a-Headline').each do |nutrient|
+      if nutrient.text == "Carbohydrates"
+        n_name = "Carbohydrate"
+      elsif nutrient.text == "Sugar"
+        n_name = "Sugars"
+      else
+        n_name = nutrient.text
+      end
+
+      nutrients << { name: n_name }
+    end
+
+    i = 0
+    until i == (count_nutrient - 1) do
+      nutrients[i][:amount] = item.search('.m-NutritionTable__a-Description')[i].text.split(" ").first.to_i
+      i += 1
+    end
+
+    nutrients = nutrients.uniq
+
+    dish = Dish.create!(name: name, image: image)
+
+    nutrients.each do |n|
+      dose = Dose.new(nutrient: Nutrient.find_by(name: n[:name]))
+      dose.dish = dish
+      dose.amount = n[:amount]
+      dose.save
+    end
+
+    puts "Created #{dish.name}."
+  end
+end
 
 puts "Created #{Dish.count} dishes."
 puts "Created #{Dose.count} doses."
-
-# dose_data = RestClient.get("https://trackapi.nutritionix.com/v2/search/item?nix_item_id=5b98bc815934e8a54010573f", headers={"x-app-id": app_id, "x-app-key": app_key})
-
-# dose_parsed = JSON.parse(dose_data)
-
-# p dose_parsed["foods"].first[ "nf_total_fat"]
-
-
-# nix_item_id =
-
-
-
-# https://trackapi.nutritionix.com/v2/search/item?nix_item_id=5b98bc815934e8a54010573f
-
-# p filtered
-# p nixes
-
-
