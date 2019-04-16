@@ -1,6 +1,6 @@
 json.extract! @order, :id
 json.dishes @order.order_items do |oi|
-  json.extract! oi.dish, :id, :name
+  json.extract! oi.dish, :id, :name, :image
   json.extract! oi, :quantity
   json.nutrients oi.dish.doses do |dose|
     json.name dose.nutrient.name
