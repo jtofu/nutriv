@@ -60,6 +60,12 @@ ActiveRecord::Schema.define(version: 2019_04_15_093359) do
     t.string "api_code"
   end
 
+  create_table "nutritions", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "order_items", force: :cascade do |t|
     t.bigint "order_id"
     t.bigint "dish_id"
