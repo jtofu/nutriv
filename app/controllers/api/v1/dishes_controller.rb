@@ -11,7 +11,7 @@ class Api::V1::DishesController < Api::V1::BaseController
       nutrient = params[:nutrient]
       amount = params[:amount]
 
-      @dishes = Dish.includes(:nutrients).where(doses: { amount: (0..amount.to_i) }, nutrients: { name: nutrient })
+      @dishes = Dish.includes(:nutrients).where(doses: { amount: (0..amount.to_i) }, nutrients: { name: nutrient }).first(5)
     end
   end
 

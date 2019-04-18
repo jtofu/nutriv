@@ -5,4 +5,6 @@ json.dishes @dishes do |dish|
     json.unit dose.nutrient.unit
     json.extract! dose, :amount
   end
+
+  json.restaurant dish.restaurant, :id, :fake_name, :lat, :long, :address_cn, :address_en
 end
