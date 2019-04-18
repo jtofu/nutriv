@@ -16,6 +16,7 @@ gem 'uglifier'
 gem 'webpacker'
 gem 'rest-client'
 # gem 'nokogiri'
+gem 'faker'
 
 group :development do
   gem 'web-console', '>= 3.3.0'

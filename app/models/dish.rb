@@ -5,4 +5,6 @@ class Dish < ApplicationRecord
   has_many :orders, through: :order_items
   has_many :meals
   has_many :users, through: :meals
+
+  belongs_to :restaurant
 end
